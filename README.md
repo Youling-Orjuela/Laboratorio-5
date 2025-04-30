@@ -1,1 +1,1 @@
-# Laboratorio-5
+# Laboratorio 5: Variabilidad de la Frecuencia Cardiaca usando la Transformada Wavelet
