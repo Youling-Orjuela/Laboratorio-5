@@ -8,7 +8,7 @@ El sistema nervioso parasimpático es catabólico; activa las respuestas de luch
 El sistema nervioso parasimpático es anabólico; conserva y restablece.
 
 ### 2. Efecto de la actividad simpática y parasimpática en la frecuencia cardiaca
-1. Inervación parasimpática: 
+1. **Inervación parasimpática:** 
 Las porciones parasimpáticas del plexo cardíaco solo reciben contribuciones del nervio vago. Las fibras preganglionares, que se ramifican desde el nervio vago derecho e izquierdo, llegan al corazón para luego entrar en el plexo cardíaco haciendo sinapsis con los ganglios de este plexo y las paredes de los atrios.
 
 - La inervación parasimpática es responsable de, reducir la frecuencia cardíaca, reducir la fuerza de contracción del corazón, vasoconstricción (estrechamiento) de las arterias coronarias.
