@@ -466,6 +466,32 @@ Se llama a cwt_hrv para ambas señales y se permite la comparación de wavelets.
 Compara los resultados del dominio del tiempo (desviación estándar de RR) con los del dominio tiempo-frecuencia (potencia LF/HF).
 Relaciona mayor variabilidad (más dispersión de RR) con mayor potencia en LF y, por tanto, mayor actividad simpática.
 
+**Resultados**
+Media RR: 0.0426 s
+Desviación estándar RR: 0.0035 s
+Media RR: 0.0285 s
+Desviación estándar RR: 0.0039 s
+ Análisis señal ECG 1
+Potencia LF (cmor1.5-1.0): 5.05
+Potencia HF (cmor1.5-1.0): 0.11
+Relación LF/HF (cmor1.5-1.0): 47.32
+
+ Comparando con wavelet 'mexh'...
+
+Potencia LF (mexh): 11.29
+Potencia HF (mexh): 0.11
+Relación LF/HF (mexh): 103.33
+
+ Análisis señal ECG 2
+Potencia LF (cmor1.5-1.0): 2.33
+Potencia HF (cmor1.5-1.0): 0.04
+Relación LF/HF (cmor1.5-1.0): 63.58
+
+ Comparando con wavelet 'mexh'...
+
+Potencia LF (mexh): 5.42
+Potencia HF (mexh): 0.04
+Relación LF/HF (mexh): 148.42
 
 ## **Análisis de Resultados**
 El análisis de la variabilidad de la frecuencia cardíaca (HRV) se abordó desde dos enfoques complementarios: el dominio del tiempo y el dominio tiempo-frecuencia mediante transformada wavelet. En el análisis temporal, se calcularon los intervalos R-R y se extrajeron parámetros estadísticos como la media y la desviación estándar (SDRR). Para la señal ECG 1, se obtuvo una media RR de 0.0426 segundos y una SDRR de 0.0035 s, mientras que para ECG 2, la media fue de 0.0285 s y la SDRR de 0.0039 s. Esto indica que, aunque ECG 1 tiene una menor frecuencia cardíaca promedio, presenta una variabilidad ligeramente menor en comparación con ECG 2, cuyas fluctuaciones son un poco más marcadas.
