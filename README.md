@@ -148,6 +148,283 @@ function figureClose(src)
     delete(src);
 end
 ```
+### **Procesamiento de la señal**
+
+**Librerias**
+```python
+import numpy as np
+import pandas as pd
+import matplotlib.pyplot as plt
+from scipy.signal import butter, lfilter, find_peaks
+import pywt
+from scipy.interpolate import interp1d
+```
+numpy: para cálculos numéricos con arreglos, como diferencias entre tiempos.
+pandas: para leer archivos .csv y trabajar con columnas de datos.
+matplotlib.pyplot: para graficar señales y resultados.
+scipy.signal: herramientas para diseñar y aplicar filtros, y detectar picos.
+pywt: librería de transformadas wavelet.
+interp1d: para interpolar valores cuando necesitamos una señal continua a intervalos regulares.
+
+**Carga de archivos CSV**
+```python
+archivo1 = "Laboratorio_Corazon1.csv"
+archivo2 = "Laboratorio_Corazon2.csv"
+datos1 = pd.read_csv(archivo1)
+datos2 = pd.read_csv(archivo2)
+```
+Define los nombres de los archivos.
+Lee cada archivo y guarda los datos en datos1 y datos2.
+
+**Extracción de columnas de tiempo y voltaje**
+```python
+tiempo1 = datos1["Tiempo_s"]
+voltaje1 = datos1["Voltaje_V"]
+tiempo2 = datos2["Tiempo_s"]
+voltaje2 = datos2["Voltaje_V"]
+```
+Extrae la columna de tiempo ("Tiempo_s") y voltaje ("Voltaje_V") de cada archivo.
+Guarda los datos como vectores separados.
+
+**Función para diseñar un filtro IIR Butterworth y función para aplicar el filtro**
+```python
+def disenar_filtro_iir(fs, f_low, f_high, orden=2):
+    nyq = fs / 2
+    low = f_low / nyq
+    high = f_high / nyq
+    b, a = butter(orden, [low, high], btype='band')
+    return b, a
+def aplicar_filtro_iir(senal, b, a):
+    return lfilter(b, a, senal)
+```
+Calcula la frecuencia de Nyquist (la mitad de la frecuencia de muestreo).
+Normaliza las frecuencias baja y alta con respecto a Nyquist.
+Usa butter() para crear un filtro pasa banda de orden 2.
+Devuelve los coeficientes del filtro (b, a).
+Aplica el filtro IIR a una señal usando los coeficientes b y a.
+
+**Filtro de las señales**
+```python
+fs = 250
+f_low = 0.5
+f_high = 40
+b, a = disenar_filtro_iir(fs, f_low, f_high)
+voltaje1_filtrado = aplicar_filtro_iir(voltaje1, b, a)
+voltaje2_filtrado = aplicar_filtro_iir(voltaje2, b, a)
+```
+Define la frecuencia de muestreo y el rango del filtro.
+Filtra ambas señales ECG para eliminar ruido de baja y alta frecuencia.
+
+**Visualización de señal original vs filtrada**
+```python
+# ======= Graficar señal original y filtrada - ECG 1 =======
+plt.figure(figsize=(10, 4))
+plt.plot(tiempo1, voltaje1, label="Señal original ECG 1", color='purple')
+plt.title("ECG 1 - Señal original")
+plt.xlabel("Tiempo (s)")
+plt.ylabel("Voltaje (V)")
+plt.grid(True)
+plt.tight_layout()
+plt.show()
+
+plt.figure(figsize=(10, 4))
+plt.plot(tiempo1, voltaje1_filtrado, label="Señal filtrada ECG 1", color='lightblue')
+plt.title("ECG 1 - Señal filtrada (IIR orden 2)")
+plt.xlabel("Tiempo (s)")
+plt.ylabel("Voltaje (V)")
+plt.grid(True)
+plt.tight_layout()
+plt.show()
+
+# ======= Graficar señal original y filtrada - ECG 2 =======
+plt.figure(figsize=(10, 4))
+plt.plot(tiempo2, voltaje2, label="Señal original ECG 2", color='lightgreen')
+plt.title("ECG 2 - Señal original")
+plt.xlabel("Tiempo (s)")
+plt.ylabel("Voltaje (V)")
+plt.grid(True)
+plt.tight_layout()
+plt.show()
+
+plt.figure(figsize=(10, 4))
+plt.plot(tiempo2, voltaje2_filtrado, label="Señal filtrada ECG 2", color='lightblue')
+plt.title("ECG 2 - Señal filtrada (IIR orden 2)")
+plt.xlabel("Tiempo (s)")
+plt.ylabel("Voltaje (V)")
+plt.grid(True)
+plt.tight_layout()
+plt.show()
+```
+Muestra gráficamente la señal original y la filtrada para comparar visualmente.
+**Segmento de 1 segundo**
+```python
+duracion = 1
+segmento1 = tiempo1 <= duracion
+segmento2 = tiempo2 <= duracion
+voltaje1_vis = voltaje1_filtrado[segmento1]
+voltaje2_vis = voltaje2_filtrado[segmento2]
+tiempo1_vis = tiempo1[segmento1]
+tiempo2_vis = tiempo2[segmento2]
+```
+Se selecciona solo el primer segundo de señal ECG.
+Este fragmento corto permite visualizar mejor los picos R.
+
+** Detección de picos R en segmento visible y detección de picos R en toda la señal**
+```python
+min_dist = int(0.3 * fs)
+picos1_vis, _ = find_peaks(voltaje1_vis, height=0.5, distance=min_dist)
+picos2_vis, _ = find_peaks(voltaje2_vis, height=0.5, distance=min_dist)
+picos1, _ = find_peaks(voltaje1_filtrado, height=0.5, distance=min_dist)
+picos2, _ = find_peaks(voltaje2_filtrado, height=0.5, distance=min_dist)
+```
+find_peaks localiza los máximos locales que representan los picos R.
+Se filtran por altura mínima (0.5) y distancia mínima entre picos (0.3 segundos).
+
+**Cálculo de intervalos R-R**
+```python
+rr_intervals1 = np.diff(tiempo1.values[picos1])
+rr_intervals2 = np.diff(tiempo2.values[picos2])
+```
+Se calcula la diferencia de tiempo entre cada par de picos R consecutivos.
+Los valores obtenidos son los intervalos R-R, base para el análisis de HRV.
+
+***Análisis de HRV en el dominio del tiempo***
+```python
+def analizar_hrv(rr_intervals):
+    mean_rr = np.mean(rr_intervals)
+    std_rr = np.std(rr_intervals)
+    print(f"Media RR: {mean_rr:.4f} s")
+    print(f"Desviación estándar RR: {std_rr:.4f} s")
+    return mean_rr, std_rr
+
+mean1, std1 = analizar_hrv(rr_intervals1)
+mean2, std2 = analizar_hrv(rr_intervals2)
+```
+mean_rr: promedio de los intervalos R-R (refleja el ritmo cardíaco).
+std_rr: desviación estándar, una medida simple de la variabilidad del ritmo cardíaco.
+
+**Graficar intervalos R-R**
+```python
+# ======= Graficar intervalos R-R =======
+plt.figure(figsize=(10, 4))
+plt.plot(rr_intervals1, marker='o', linestyle='-', color='red')
+plt.title("Intervalos R-R - ECG 1")
+plt.xlabel("Número de intervalo")
+plt.ylabel("Duración (s)")
+plt.grid(True)
+plt.tight_layout()
+plt.show()
+
+plt.figure(figsize=(10, 4))
+plt.plot(rr_intervals2, marker='o', linestyle='-', color='darkorange')
+plt.title("Intervalos R-R - ECG 2")
+plt.xlabel("Número de intervalo")
+plt.ylabel("Duración (s)")
+plt.grid(True)
+plt.tight_layout()
+plt.show()
+```
+***Análisis de wavelate**
+***Definición de la función, interpolación de la señal RR, ransformada Wavelet Continua**
+```python
+def cwt_hrv(rr_intervals, tiempo_picos, fs_rr=4, wavelet='cmor1.5-1.0', comparar=False):
+    tiempo_interp = np.linspace(tiempo_picos[0], tiempo_picos[-1], int((tiempo_picos[-1] - tiempo_picos[0]) * fs_rr))
+    tiempo_rr = (tiempo_picos[1:] + tiempo_picos[:-1]) / 2
+    interp_rr = interp1d(tiempo_rr, rr_intervals, kind='cubic', fill_value="extrapolate")(tiempo_interp)
+
+    scales = np.arange(1, 256)
+    coef, freqs = pywt.cwt(interp_rr, scales, wavelet, 1/fs_rr)
+    power = np.abs(coef) ** 2
+```
+rr_intervals: array con los intervalos RR (diferencia de tiempo entre picos R sucesivos del ECG).
+tiempo_picos: array con los tiempos en los que ocurrieron los picos R.
+fs_rr: frecuencia de muestreo deseada para interpolar la serie RR.
+wavelet: tipo de wavelet usada para el análisis.
+comparar: si es True y se usa cmor1.5-1.0, la función también se ejecuta con la wavelet mexh para comparación.
+tiempo_interp: crea una serie de tiempo uniforme desde el primer al último pico R con una resolución dada por fs_rr.
+tiempo_rr: estima el tiempo medio entre cada par de picos, ubicando los RR entre los picos.
+interp_rr: interpola la señal RR en tiempo_interp usando interpolación cúbica. Esto es necesario porque la CWT requiere una señal muestreada de forma uniforme.
+scales: conjunto de escalas usadas en la CWT. Escalas más grandes corresponden a frecuencias más bajas.
+coef: coeficientes complejos obtenidos al aplicar la CWT a la señal interpolada.
+freqs: mapea cada escala a su frecuencia equivalente (según la wavelet y fs_rr).
+power: calcula la potencia en cada punto tiempo-frecuencia como el cuadrado del módulo del coeficiente.
+
+***vCálculo de Potencia LF, HF y Relación LF/HF**
+```python
+lf_band = (freqs >= 0.04) & (freqs <= 0.15)
+hf_band = (freqs > 0.15) & (freqs <= 0.4)
+lf_power = np.sum(power[lf_band, :])
+hf_power = np.sum(power[hf_band, :])
+ratio = lf_power / hf_power if hf_power != 0 else np.nan
+```
+Define las bandas de frecuencia estándar:
+LF: 0.04–0.15 Hz → actividad simpática y parasimpática.
+HF: 0.15–0.4 Hz → actividad parasimpática.
+lf_power y hf_power: potencia total integrada en esas bandas.
+ratio: relación LF/HF. Se interpreta como un índice del balance autonómico (más simpático si sube).
+
+**Visualización con Espectrograma Wavelet e  impresión de resultados**
+```python
+plt.figure(figsize=(12, 6), dpi=150)
+plt.imshow(power, extent=[tiempo_interp[0], tiempo_interp[-1], freqs[-1], freqs[0]],
+           cmap='jet', aspect='auto', interpolation='bilinear')
+plt.colorbar(label='Potencia')
+plt.title(f"Espectrograma Wavelet de HRV ({wavelet})")
+plt.xlabel("Tiempo (s)")
+plt.ylabel("Frecuencia (Hz)")
+plt.axhline(0.04, color='white', linestyle='--', label='LF límite inferior')
+plt.axhline(0.15, color='white', linestyle='--', label='LF/HF límite')
+plt.axhline(0.4, color='white', linestyle='--', label='HF límite superior')
+plt.legend(loc='upper right')
+plt.tight_layout()
+plt.show()
+
+print(f"Potencia LF ({wavelet}): {lf_power:.2f}")
+print(f"Potencia HF ({wavelet}): {hf_power:.2f}")
+print(f"Relación LF/HF ({wavelet}): {ratio:.2f}\n")
+```
+Se genera un espectrograma tiempo-frecuencia de la señal interpolada.
+Ejes:
+X: tiempo.
+Y: frecuencia en Hz.
+Colores: intensidad (potencia) de cada frecuencia en cada instante.
+Se marcan con líneas blancas los límites de las bandas LF y HF para facilitar la interpretación visual.
+Imprime en consola los valores numéricos clave del análisis: potencias en las bandas y su relación.
+
+**Comparación con otra wavelet**
+```python
+if comparar and wavelet == 'cmor1.5-1.0':
+    print(" Comparando con wavelet 'mexh'...\n")
+    cwt_hrv(rr_intervals, tiempo_picos, fs_rr=fs_rr, wavelet='mexh', comparar=False)
+```
+Si la bandera comparar es True y se está usando la wavelet cmor1.5-1.0, se vuelve a llamar a la misma función con la wavelet mexh (Mexican Hat) para comparar el comportamiento.
+
+**Llamadas a la función para dos señales y comparación tiempo vs tiempo-frecuencia**
+
+```python
+tiempo_picos1 = tiempo1.values[picos1]
+tiempo_picos2 = tiempo2.values[picos2]
+
+print(" Análisis señal ECG 1")
+cwt_hrv(rr_intervals1, tiempo_picos1, comparar=True)
+
+print(" Análisis señal ECG 2")
+cwt_hrv(rr_intervals2, tiempo_picos2, comparar=True)
+
+print("\n Comparación entre análisis en el dominio del tiempo y tiempo-frecuencia:")
+print(" Una mayor desviación estándar de los intervalos RR puede reflejar mayor variabilidad del ritmo cardíaco.")
+print(" En el espectrograma wavelet, esto puede traducirse en mayor potencia en la banda LF.")
+print(" Por otro lado, una frecuencia cardíaca más estable se asocia con menor potencia en LF y mayor en HF.")
+print(f" ECG 1: std RR = {std1:.4f} s")
+print(f" ECG 2: std RR = {std2:.4f} s")
+print("Interpreta estos valores junto con la relación LF/HF para evaluar el balance simpático/parasimático.\n")
+```
+Se extraen los tiempos correspondientes a los picos R detectados en dos señales ECG distintas.
+Se llama a cwt_hrv para ambas señales y se permite la comparación de wavelets.
+Compara los resultados del dominio del tiempo (desviación estándar de RR) con los del dominio tiempo-frecuencia (potencia LF/HF).
+Relaciona mayor variabilidad (más dispersión de RR) con mayor potencia en LF y, por tanto, mayor actividad simpática.
+
+
 ## **Análisis de Resultados**
 El análisis de la variabilidad de la frecuencia cardíaca (HRV) se abordó desde dos enfoques complementarios: el dominio del tiempo y el dominio tiempo-frecuencia mediante transformada wavelet. En el análisis temporal, se calcularon los intervalos R-R y se extrajeron parámetros estadísticos como la media y la desviación estándar (SDRR). Para la señal ECG 1, se obtuvo una media RR de 0.0426 segundos y una SDRR de 0.0035 s, mientras que para ECG 2, la media fue de 0.0285 s y la SDRR de 0.0039 s. Esto indica que, aunque ECG 1 tiene una menor frecuencia cardíaca promedio, presenta una variabilidad ligeramente menor en comparación con ECG 2, cuyas fluctuaciones son un poco más marcadas.
 
