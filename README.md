@@ -43,7 +43,7 @@ En el contexto del análisis de señales biológicas (como EEG, ECG, EMG, PPG, e
   
 La Wavelet Morlet es una de las más utilizadas en neurociencia y análisis de señales cerebrales (EEG, MEG) debido a su capacidad de representar frecuencias específicas con gran resolución temporal y frecuencia. Esta es ideal para detectar oscilaciones neuronales en bandas específicas (alfa, beta, gamma, etc.), tiene buena resolución en frecuencia, lo cual permite analizar ritmos cerebrales con precisión y es adecuada para transformada wavelet continua
 
-### **Captar la señal**
+## **Captar la señal**
 ```matlab
 clc;
 clearvars;
@@ -148,3 +148,11 @@ function figureClose(src)
     delete(src);
 end
 ```
+## **Análisis de Resultados**
+El análisis de la variabilidad de la frecuencia cardíaca (HRV) se abordó desde dos enfoques complementarios: el dominio del tiempo y el dominio tiempo-frecuencia mediante transformada wavelet. En el análisis temporal, se calcularon los intervalos R-R y se extrajeron parámetros estadísticos como la media y la desviación estándar (SDRR). Para la señal ECG 1, se obtuvo una media RR de 0.0426 segundos y una SDRR de 0.0035 s, mientras que para ECG 2, la media fue de 0.0285 s y la SDRR de 0.0039 s. Esto indica que, aunque ECG 1 tiene una menor frecuencia cardíaca promedio, presenta una variabilidad ligeramente menor en comparación con ECG 2, cuyas fluctuaciones son un poco más marcadas.
+
+Por otro lado, el análisis en el dominio tiempo-frecuencia utilizando transformada wavelet (CWT) permitió observar cómo se distribuye la potencia de la señal en distintas bandas de frecuencia a lo largo del tiempo. Se utilizaron las wavelets cmor1.5-1.0 y mexh, y se calcularon las potencias en las bandas de baja (LF) y alta frecuencia (HF), así como la relación LF/HF. En ambas señales, la potencia en LF fue significativamente mayor que en HF, lo cual indica un predominio de la actividad simpática. Específicamente, la señal ECG 1 mostró una relación LF/HF de 47.32 con cmor y 103.33 con mexh, mientras que ECG 2 alcanzó relaciones aún más elevadas: 63.58 y 148.42 respectivamente. Estos resultados revelan un mayor dominio simpático en ECG 2.
+
+## **Conclusiones**
+
+En conclusión, los resultados obtenidos cumplen con los objetivos propuestos en la guía, que buscaban relacionar la variabilidad en el dominio del tiempo con la distribución espectral obtenida mediante wavelets. Se logró observar cómo estas dos formas de análisis se complementan para ofrecer una visión más completa de la modulación cardíaca y su relación con el sistema nervioso autónomo.
