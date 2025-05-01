@@ -288,6 +288,31 @@ picos2, _ = find_peaks(voltaje2_filtrado, height=0.5, distance=min_dist)
 find_peaks localiza los máximos locales que representan los picos R.
 Se filtran por altura mínima (0.5) y distancia mínima entre picos (0.3 segundos).
 
+**Gráficas 1s de las señales filtradas ECG1 y ECG2**
+```python
+plt.figure(figsize=(10, 4))
+plt.plot(tiempo1_vis, voltaje1_vis, label="ECG 1 filtrada (1s)", color='lightblue')
+plt.plot(tiempo1.values[picos1_vis], voltaje1_filtrado[picos1_vis], 'ro', label='Picos R')
+plt.title("ECG 1 - Primer segundo con picos R detectados")
+plt.xlabel("Tiempo (s)")
+plt.ylabel("Voltaje (V)")
+plt.grid(True)
+plt.legend()
+plt.tight_layout()
+plt.show()
+
+plt.figure(figsize=(10, 4))
+plt.plot(tiempo2_vis, voltaje2_vis, label="ECG 2 filtrada (1s)", color='lightblue')
+plt.plot(tiempo2.values[picos2_vis], voltaje2_filtrado[picos2_vis], 'ro', label='Picos R')
+plt.title("ECG 2 - Primer segundo con picos R detectados")
+plt.xlabel("Tiempo (s)")
+plt.ylabel("Voltaje (V)")
+plt.grid(True)
+plt.legend()
+plt.tight_layout()
+plt.show()
+```
+Se muestran las gráficas de el primer segundo de ambas señales para una mejoria visual de lo que se esta evaluando.
 **Cálculo de intervalos R-R**
 ```python
 rr_intervals1 = np.diff(tiempo1.values[picos1])
