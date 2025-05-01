@@ -313,6 +313,9 @@ plt.tight_layout()
 plt.show()
 ```
 Se muestran las gráficas de el primer segundo de ambas señales para una mejoria visual de lo que se esta evaluando.
+[![r.jpg](https://i.postimg.cc/SxnvFcyg/r.jpg)](https://postimg.cc/yDzP0g3R)
+[![r2.jpg](https://i.postimg.cc/zBrtgMTQ/r2.jpg)](https://postimg.cc/KK0DX0q7)
+
 **Cálculo de intervalos R-R**
 ```python
 rr_intervals1 = np.diff(tiempo1.values[picos1])
@@ -357,9 +360,8 @@ plt.grid(True)
 plt.tight_layout()
 plt.show()
 ```
-[![r.jpg](https://i.postimg.cc/SxnvFcyg/r.jpg)](https://postimg.cc/yDzP0g3R)
-[![r2.jpg](https://i.postimg.cc/zBrtgMTQ/r2.jpg)](https://postimg.cc/KK0DX0q7)
-
+[![r3.jpg](https://i.postimg.cc/Jhq6jxK4/r3.jpg)](https://postimg.cc/Z9WxSr11)
+[![r4.jpg](https://i.postimg.cc/Tw3k0bHj/r4.jpg)](https://postimg.cc/7CjMY54b)
 ***Análisis de wavelate**
 ***Definición de la función, interpolación de la señal RR, ransformada Wavelet Continua**
 ```python
@@ -385,7 +387,7 @@ coef: coeficientes complejos obtenidos al aplicar la CWT a la señal interpolada
 freqs: mapea cada escala a su frecuencia equivalente (según la wavelet y fs_rr).
 power: calcula la potencia en cada punto tiempo-frecuencia como el cuadrado del módulo del coeficiente.
 
-***vCálculo de Potencia LF, HF y Relación LF/HF**
+**Cálculo de Potencia LF, HF y Relación LF/HF**
 ```python
 lf_band = (freqs >= 0.04) & (freqs <= 0.15)
 hf_band = (freqs > 0.15) & (freqs <= 0.4)
@@ -420,6 +422,10 @@ print(f"Potencia HF ({wavelet}): {hf_power:.2f}")
 print(f"Relación LF/HF ({wavelet}): {ratio:.2f}\n")
 ```
 Se genera un espectrograma tiempo-frecuencia de la señal interpolada.
+[![w1.jpg](https://i.postimg.cc/QC60vdvL/w1.jpg)](https://postimg.cc/4H969sJw)
+[![w2.jpg](https://i.postimg.cc/wTvWLDs9/w2.jpg)](https://postimg.cc/vDJLdgzK)
+[![w3.jpg](https://i.postimg.cc/7YWKVbg0/w3.jpg)](https://postimg.cc/6yCV6Wbp)
+[![w4.jpg](https://i.postimg.cc/VNj4mR2W/w4.jpg)](https://postimg.cc/06y7Cpkz)
 Ejes:
 X: tiempo.
 Y: frecuencia en Hz.
@@ -472,7 +478,9 @@ En conclusión, los resultados obtenidos cumplen con los objetivos propuestos en
 
 ## Bibliografía
 [1] L. Veloza, C. Jiménez, D. Quiñones, F. Polanía, L. C. Pachón-Valero, and C. Y. Rodríguez-Triviño, “Variabilidad de la frecuencia cardiaca como factor predictor de las enfermedades cardiovasculares,” Revista Colombiana De Cardiología, vol. 26, no. 4, pp. 205–210, Jun. 2019, doi: 10.1016/j.rccar.2019.01.006.
+
 [2] T. F. of the E. S. of C. the N. A. Electrophysiology, “Heart rate variability,” Circulation, vol. 93, no. 5, pp. 1043–1065, Mar. 1996, doi: 10.1161/01.cir.93.5.1043.
+
 [3] https://biblus.us.es/bibing/proyectos/abreproy/11511/fichero/PFC+Silvia+Blasco+Vadillo%252FCap%C3%ADtulo+9+-+Anexo+2.pdf+#:~:text=La%20Transformada%20Wavelet%20es%20un,im%C3%A1genes%20m%C3%A9dicas%20y%20se%C3%B1ales%20biol%C3%B3gicas.
 
 
