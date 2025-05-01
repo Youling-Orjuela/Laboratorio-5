@@ -43,3 +43,108 @@ En el contexto del análisis de señales biológicas (como EEG, ECG, EMG, PPG, e
   
 La Wavelet Morlet es una de las más utilizadas en neurociencia y análisis de señales cerebrales (EEG, MEG) debido a su capacidad de representar frecuencias específicas con gran resolución temporal y frecuencia. Esta es ideal para detectar oscilaciones neuronales en bandas específicas (alfa, beta, gamma, etc.), tiene buena resolución en frecuencia, lo cual permite analizar ritmos cerebrales con precisión y es adecuada para transformada wavelet continua
 
+### **Captar la señal**
+```matlab
+clc;
+clearvars;
+close all;
+clear all
+
+%% Cerrar puertos seriales abiertos previamente
+puertosAbiertos = serialportfind;
+if ~isempty(puertosAbiertos)
+    for idx = 1:length(puertosAbiertos)
+        delete(puertosAbiertos(idx));
+    end
+end
+
+%% Configuración del puerto serial
+puerto   = "COM5" + ...
+    "";   % Ajusta según corresponda
+baudRate = 115200;
+s = serialport(puerto, baudRate);
+configureTerminator(s, "LF");
+
+%% Parámetros de adquisición y visualización
+voltaje_ref  = 5;        % Voltaje de referencia del ADC (V)
+adc_max      = 4095;      % Resolución 8 bits
+fs           = 1000;     % Frecuencia de muestreo estimada (Hz)
+dt           = 1/fs;     % Intervalo de muestreo (s)
+num_muestras = 50;     % Puntos en la ventana de pantalla
+offset       = 0;      % Offset (V)
+
+tiempoVentana = (0:num_muestras-1) * dt;
+buffer        = zeros(1, num_muestras);
+
+dataLog = [];
+timeLog = [];
+
+%% Crear interfaz con botón Stop
+gcfHandle = figure('Name','EMG en Tiempo Real','NumberTitle','off');
+set(gcfHandle, 'UserData', struct('stopFlag', false)); % Inicializar UserData
+set(gcfHandle, 'CloseRequestFcn', @(src,~) figureClose(src));
+
+uicontrol('Style','pushbutton','String','Stop','Position',[10 10 50 20],...
+    'Callback',@(src,~) stopAcquisition(src));
+
+hLine = plot(tiempoVentana, buffer, 'b', 'LineWidth', 1.5);
+ylim([0, voltaje_ref + offset]);
+xlim([tiempoVentana(1), tiempoVentana(end)]);
+xlabel('Tiempo (s)');
+ylabel('Voltaje (V)');
+title('Señal EMG en Tiempo Real');
+grid on;
+
+disp('Iniciando adquisición. Pulse Stop para finalizar y guardar.');
+
+%% Bucle principal de adquisición mientras no se presione Stop
+userData = get(gcfHandle, 'UserData');
+%I=0;
+while ~userData.stopFlag && ishandle(gcfHandle)
+    if s.NumBytesAvailable > 0
+        nuevosBytes = read(s, s.NumBytesAvailable, 'uint8')
+        nuevosVolt  = double(nuevosBytes)/adc_max * voltaje_ref + offset;
+        %datos[i]=nuevosVolt
+
+        for v = nuevosVolt(:).'
+            buffer = [buffer(2:end), v];
+            dataLog(end+1) = v;
+            timeLog(end+1) = (length(dataLog)-1) * dt;
+        end
+        set(hLine, 'YData', buffer);
+        drawnow limitrate;
+    else
+        pause(0.001);
+    end
+    userData = get(gcfHandle, 'UserData'); % Actualizar UserData
+    %I=I+1;
+end
+save("misenal.m",'datos')
+%% Guardar datos cuando se detiene
+if ~isempty(dataLog)
+    filename = fullfile(pwd, 'Laboratorio_Corazon2.csv');
+    T = table(timeLog.', dataLog.', 'VariableNames', {'Tiempo_s','Voltaje_V'});
+    writetable(T, filename);
+    disp(['Datos guardados en: ', filename]);
+end
+
+%% Cerrar puerto serial y figura
+delete(s);
+if ishandle(gcfHandle)
+    delete(gcfHandle);
+end
+
+%% Callbacks
+function stopAcquisition(src)
+    userData = get(src.Parent, 'UserData');
+    userData.stopFlag = true;
+    set(src.Parent, 'UserData', userData);
+end
+
+function figureClose(src)
+    userData = get(src, 'UserData');
+    userData.stopFlag = true;
+    set(src, 'UserData', userData);
+    delete(src);
+end
+```
