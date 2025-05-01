@@ -158,9 +158,9 @@ Por otro lado, el análisis en el dominio tiempo-frecuencia utilizando transform
 En conclusión, los resultados obtenidos cumplen con los objetivos propuestos en la guía, que buscaban relacionar la variabilidad en el dominio del tiempo con la distribución espectral obtenida mediante wavelets. Se logró observar cómo estas dos formas de análisis se complementan para ofrecer una visión más completa de la modulación cardíaca y su relación con el sistema nervioso autónomo.
 
 ## Bibliografía
-- https://www.sciencedirect.com/science/article/pii/S0120563319300683
-- https://www.ahajournals.org/doi/10.1161/01.cir.93.5.1043
-- https://biblus.us.es/bibing/proyectos/abreproy/11511/fichero/PFC+Silvia+Blasco+Vadillo%252FCap%C3%ADtulo+9+-+Anexo+2.pdf+#:~:text=La%20Transformada%20Wavelet%20es%20un,im%C3%A1genes%20m%C3%A9dicas%20y%20se%C3%B1ales%20biol%C3%B3gicas.
+[1] L. Veloza, C. Jiménez, D. Quiñones, F. Polanía, L. C. Pachón-Valero, and C. Y. Rodríguez-Triviño, “Variabilidad de la frecuencia cardiaca como factor predictor de las enfermedades cardiovasculares,” Revista Colombiana De Cardiología, vol. 26, no. 4, pp. 205–210, Jun. 2019, doi: 10.1016/j.rccar.2019.01.006.
+[2] T. F. of the E. S. of C. the N. A. Electrophysiology, “Heart rate variability,” Circulation, vol. 93, no. 5, pp. 1043–1065, Mar. 1996, doi: 10.1161/01.cir.93.5.1043.
+[3] https://biblus.us.es/bibing/proyectos/abreproy/11511/fichero/PFC+Silvia+Blasco+Vadillo%252FCap%C3%ADtulo+9+-+Anexo+2.pdf+#:~:text=La%20Transformada%20Wavelet%20es%20un,im%C3%A1genes%20m%C3%A9dicas%20y%20se%C3%B1ales%20biol%C3%B3gicas.
 
 
 ## Colaboradores
