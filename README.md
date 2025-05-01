@@ -156,3 +156,15 @@ Por otro lado, el análisis en el dominio tiempo-frecuencia utilizando transform
 ## **Conclusiones**
 
 En conclusión, los resultados obtenidos cumplen con los objetivos propuestos en la guía, que buscaban relacionar la variabilidad en el dominio del tiempo con la distribución espectral obtenida mediante wavelets. Se logró observar cómo estas dos formas de análisis se complementan para ofrecer una visión más completa de la modulación cardíaca y su relación con el sistema nervioso autónomo.
+
+## Bibliografía
+https://www.sciencedirect.com/science/article/pii/S0120563319300683
+https://www.ahajournals.org/doi/10.1161/01.cir.93.5.1043
+https://biblus.us.es/bibing/proyectos/abreproy/11511/fichero/PFC+Silvia+Blasco+Vadillo%252FCap%C3%ADtulo+9+-+Anexo+2.pdf+#:~:text=La%20Transformada%20Wavelet%20es%20un,im%C3%A1genes%20m%C3%A9dicas%20y%20se%C3%B1ales%20biol%C3%B3gicas.
+
+
+## Colaboradores
+1. Youling Andrea Orjuela Bermúdez (5600815)
+2. Jose Manuel Gomez Carrillo (5600793)
+3. Juan Camilo Quintero Velandia (5600745)
+
