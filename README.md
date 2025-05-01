@@ -43,6 +43,8 @@ En el contexto del análisis de señales biológicas (como EEG, ECG, EMG, PPG, e
   
 La Wavelet Morlet es una de las más utilizadas en neurociencia y análisis de señales cerebrales (EEG, MEG) debido a su capacidad de representar frecuencias específicas con gran resolución temporal y frecuencia. Esta es ideal para detectar oscilaciones neuronales en bandas específicas (alfa, beta, gamma, etc.), tiene buena resolución en frecuencia, lo cual permite analizar ritmos cerebrales con precisión y es adecuada para transformada wavelet continua
 
+[![Inicio.png](https://i.postimg.cc/3JCXcN5d/Inicio.png)](https://postimg.cc/2VyLqz5D)
+
 ## **Captar la señal**
 ```matlab
 clc;
@@ -255,7 +257,13 @@ plt.grid(True)
 plt.tight_layout()
 plt.show()
 ```
+
 Muestra gráficamente la señal original y la filtrada para comparar visualmente.
+[![ECG1.jpg](https://i.postimg.cc/26KvnLZK/ECG1.jpg)](https://postimg.cc/ftYJNL5c)
+[![IIR.jpg](https://i.postimg.cc/mgsdPKRF/IIR.jpg)](https://postimg.cc/KR07Vq1Z)
+[![ECG2.jpg](https://i.postimg.cc/wjQwLFT4/ECG2.jpg)](https://postimg.cc/CRdCVG8b)
+[![IIR2.jpg](https://i.postimg.cc/25j2wv1k/IIR2.jpg)](https://postimg.cc/NKV6GK8S)
+
 **Segmento de 1 segundo**
 ```python
 duracion = 1
@@ -324,6 +332,9 @@ plt.grid(True)
 plt.tight_layout()
 plt.show()
 ```
+[![r.jpg](https://i.postimg.cc/SxnvFcyg/r.jpg)](https://postimg.cc/yDzP0g3R)
+[![r2.jpg](https://i.postimg.cc/zBrtgMTQ/r2.jpg)](https://postimg.cc/KK0DX0q7)
+
 ***Análisis de wavelate**
 ***Definición de la función, interpolación de la señal RR, ransformada Wavelet Continua**
 ```python
